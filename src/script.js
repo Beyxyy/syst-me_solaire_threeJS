@@ -155,6 +155,8 @@ sun.receiveShadow = true;
 earth.position.set(8, 8, 4);
 earth.receiveShadow = true;
 saturne.position.set(12, 1, 8);
+saturnRing1.receiveShadow = true;
+saturnRing2.receiveShadow = true;
 saturne.receiveShadow = true;
 moon.receiveShadow = true;
 
@@ -172,13 +174,26 @@ scene.add(neptune);
  * Lights
  */
 //faire en sorte que le soleil éclaire la terre
-// const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-const pointLight = new THREE.PointLight(0xffffff, 15);
-pointLight.position.set(0, 0, 0);
-pointLight.castShadow = true;
-scene.add(pointLight);
-// scene.add(ambientLight);
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.05);
+var Light = [];
 
+
+//ajout de la lumière du soleil
+parameters.intensity = 15;
+const add_light = () => {
+    Light.forEach((pos, i) => { 
+        scene.remove(pos)}
+    );
+    const pointLight = new THREE.PointLight(0xffffff, parameters.intensity);
+    pointLight.position.set(0, 0, 0);
+    pointLight.castShadow = true;
+    Light.push(pointLight);
+    scene.add(pointLight);
+}
+add_light();
+gui.add(parameters, 'intensity').min(0).max(100).step(1).onFinishChange(add_light);
+
+scene.add(ambientLight);
 /**
  * Sizes
  */
