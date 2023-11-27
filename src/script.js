@@ -23,14 +23,14 @@ const scene = new THREE.Scene()
 const textureLoader = new THREE.TextureLoader()
 const sunTexture = textureLoader.load('/textures/sunmap.png')
 const earthTexture = textureLoader.load('/textures/earthmap.png')
+const saturnTexture = textureLoader.load('/textures/saturnmap.png')
+const jupiterTexture = textureLoader.load('/textures/jupitermap.png')
+const neptuneTexture = textureLoader.load('/textures/neptunemap.png')
+const moonTexture = textureLoader.load('/textures/moonmap.png') 
 
 /**
  * Objects
  */
-
-
-
-
 //étoile filante 
 var parameters = {};
 parameters.count = 100;
@@ -53,8 +53,7 @@ for (let i=0; i<parameters.count; i++){
     const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
     array_particules.push(particlesMesh);
     scene.add(particlesMesh);
-}
-}
+}}
 
 gui.add(parameters, 'count').min(0).max(1000).step(10);
 gui.add({apply_changes: () => {
@@ -63,6 +62,10 @@ gui.add({apply_changes: () => {
     });
     add_particules();
 }}, 'apply_changes');
+
+add_particules();
+
+//ajout de la fusée
 let rocket;
 const loader = new GLTFLoader();
 loader.load('/models/rocket.glb', function(gltf) {
@@ -74,23 +77,22 @@ loader.load('/models/rocket.glb', function(gltf) {
     scene.add(rocket);
 });
 
-// Sphere avec la texture earthTexture
+//ajout de la Terre
 const earth = new THREE.Mesh(
     new THREE.SphereGeometry(0.4, 32, 32),
     new THREE.MeshBasicMaterial({
-        map: earthTexture, // Utilise la texture earthTexture
-        // Ajoute une couleur
-        // color: 0xff0000
+        map: earthTexture,
     })
 )
+
+//Ajout du soleil
 const sun = new THREE.Mesh(
     new THREE.SphereGeometry(1, 32, 32),
     new THREE.MeshBasicMaterial({
-        map: sunTexture, // Utilise la texture sunTexture
+        map: sunTexture,
     })
 )
-// Remove the ambient light
-// scene.remove(ambientLight); // Uncomment this line if you have an ambient light in your scene
+
 
 const sunLight = new THREE.PointLight(0xffffff, 1);
 
@@ -114,7 +116,7 @@ scene.traverse(function(node) {
 const saturne = new THREE.Mesh(
     new THREE.SphereGeometry(0.8, 32, 32),
     new THREE.MeshBasicMaterial({
-        map: textureLoader.load('/textures/saturnmap.png'), // Utilise la texture sunTexture
+        map: saturnTexture, // Utilise la texture sunTexture
     })
 )
 
@@ -124,7 +126,7 @@ const neptune = new THREE.Mesh(
     new THREE.SphereGeometry(0.8, 32, 32),
 
     new THREE.MeshBasicMaterial({
-        map: textureLoader.load('/textures/neptunemap.png'), // Utilise la texture sunTexture
+        map: neptuneTexture, 
     })
 )
 //ajout de neptune
@@ -138,7 +140,7 @@ neptune.position.set(2, 4, 3);
 const saturnRing1 = new THREE.Mesh(
     new THREE.RingGeometry(0.9, 1.2, 32),
     new THREE.MeshBasicMaterial({
-        map: textureLoader.load('/textures/saturnmap.png'), // Utilise la texture sunTexture 
+        map: saturnTexture,
         side: THREE.DoubleSide
     })
 )
@@ -146,7 +148,7 @@ const saturnRing1 = new THREE.Mesh(
 const saturnRing2 = new THREE.Mesh(
     new THREE.RingGeometry(1, 1.2, 32),
     new THREE.MeshBasicMaterial({
-        map: textureLoader.load('/textures/saturnmap.png'), // Utilise la texture sunTexture 
+        map: saturnTexture, 
         side: THREE.DoubleSide
     })
 )
@@ -162,7 +164,7 @@ saturnRing2.rotation.x = Math.PI / 2;
 const moon = new THREE.Mesh(
     new THREE.SphereGeometry(0.1, 32, 32),
     new THREE.MeshBasicMaterial({
-        map: textureLoader.load('/textures/moonmap.png'), // Utilise la texture sunTexture
+        map: moonTexture,
     })
 )
 //ajout de la lune autour de la terre
