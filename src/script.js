@@ -80,7 +80,7 @@ loader.load('/models/rocket.glb', function(gltf) {
 //ajout de la Terre
 const earth = new THREE.Mesh(
     new THREE.SphereGeometry(0.4, 32, 32),
-    new THREE.MeshBasicMaterial({
+    new THREE.MeshPhongMaterial({
         map: earthTexture,
     })
 )
@@ -93,29 +93,9 @@ const sun = new THREE.Mesh(
     })
 )
 
-
-const sunLight = new THREE.PointLight(0xffffff, 1);
-
-// Position the light to the same position as the sun
-sunLight.position.set(sun.position.x, sun.position.y, sun.position.z);
-
-// Enable shadows for this light source
-sunLight.castShadow = true;
-
-// Add the light to the scene
-scene.add(sunLight);
-
-// Make sure all objects can receive shadows
-scene.traverse(function(node) {
-    if (node instanceof THREE.Mesh) {
-        node.receiveShadow = true;
-        node.castShadow = true;
-    }
-});
-
 const saturne = new THREE.Mesh(
     new THREE.SphereGeometry(0.8, 32, 32),
-    new THREE.MeshBasicMaterial({
+    new THREE.MeshPhongMaterial({
         map: saturnTexture, // Utilise la texture sunTexture
     })
 )
@@ -125,82 +105,79 @@ const saturne = new THREE.Mesh(
 const neptune = new THREE.Mesh(
     new THREE.SphereGeometry(0.8, 32, 32),
 
-    new THREE.MeshBasicMaterial({
+    new THREE.MeshPhongMaterial({
         map: neptuneTexture, 
     })
 )
-//ajout de neptune
-scene.add(neptune);
-//ajout de neptune
 neptune.position.set(2, 4, 3);
 
 
 
 //ajout d'un anneau à saturne
 const saturnRing1 = new THREE.Mesh(
-    new THREE.RingGeometry(0.9, 1.2, 32),
-    new THREE.MeshBasicMaterial({
+    new THREE.RingGeometry(1.2, 1, 32),
+    new THREE.MeshPhongMaterial({
         map: saturnTexture,
         side: THREE.DoubleSide
     })
 )
 
 const saturnRing2 = new THREE.Mesh(
-    new THREE.RingGeometry(1, 1.2, 32),
-    new THREE.MeshBasicMaterial({
+    new THREE.RingGeometry(1.9, 1.8, 32),
+    new THREE.MeshPhongMaterial({
         map: saturnTexture, 
         side: THREE.DoubleSide
     })
 )
-//ajout de l'anneau autour de saturne
-saturne.add(saturnRing2);
-//ajout de l'anneau autour de saturne
+saturnRing1.position.set(0, 0, 0);
+saturnRing1.rotation.x = Math.PI/2;
 saturnRing2.position.set(0, 0, 0);
-//ajout de l'anneau autour de saturne
-saturnRing2.rotation.x = Math.PI / 2;
+saturnRing2.rotation.x = Math.PI/2;
 
 
 //ajout de la lune autour de la terre
 const moon = new THREE.Mesh(
     new THREE.SphereGeometry(0.1, 32, 32),
-    new THREE.MeshBasicMaterial({
+    new THREE.MeshPhongMaterial({
         map: moonTexture,
     })
 )
 //ajout de la lune autour de la terre
-earth.add(moon);
+
 //ajout de la lune autour de la terre
 moon.position.set(0, 0, 1);
 
 
+
 // Définir la position de la sphere
 sun.position.set(0, 0, 0);
+sun.receiveShadow = true;
 earth.position.set(8, 8, 4);
+earth.receiveShadow = true;
 saturne.position.set(12, 1, 8);
-// stars.position.set(10, 10, 10);
+saturne.receiveShadow = true;
+moon.receiveShadow = true;
 
 // Ajouter la sphere à la scène
 scene.add(earth);
+earth.add(moon);
 scene.add(saturne);
+saturne.add(saturnRing1);
+saturne.add(saturnRing2);
 scene.add(sun);
+scene.add(neptune);
 
 
 /**
  * Lights
  */
-// Créer une lumière ambiante
-// Ajout d'une lumière ambiante violacée
-const ambientLight = new THREE.AmbientLight(0x404040, 0.5)
-// Ajout d'une lumière directionnelle
-// const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5)
-// Définir la position de la lumière directionnelle
-// directionalLight.position.set(0, 0, 0)
-// La lumière pointe vers la sphere
-// directionalLight.target = earth
-
-// Ajouter la lumière à la scène
-scene.add(ambientLight)
-// scene.add(directionalLight)
+//faire en sorte que le soleil éclaire la terre
+// const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+const pointLight = new THREE.PointLight(0xffffff, 15);
+pointLight.position.set(0, 0, 0);
+pointLight.castShadow = true;
+scene.add(pointLight);
+// scene.add(ambientLight);
 
 /**
  * Sizes
@@ -222,6 +199,7 @@ window.addEventListener('resize', () => {
     // Update renderer
     renderer.setSize(sizes.width, sizes.height)
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+    renderer.shadowMap.enabled = true; // Enable shadows for all objects in the scene
 })
 
 /**
@@ -243,6 +221,7 @@ const renderer = new THREE.WebGLRenderer({
 })
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+renderer.shadowMap.enabled = true; // Enable shadows for all objects in the scene
 
 /**
  * Animate
